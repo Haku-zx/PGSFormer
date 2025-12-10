@@ -1,8 +1,7 @@
 
-# PGSFormer: Patch-based Graph-Spatial Transformer for Traffic Forecasting
+# PGSFormer: Traffic flow prediction based on joint optimization of Progressive Graph Convolutional Networks with Subseries Transformer
 
 PGSFormer is a spatial–temporal prediction model designed for multi-step traffic flow forecasting.  
-It integrates **dilated temporal convolutions**, **graph convolution networks (GCN)**, and a **patch-based Transformer encoder**, enabling effective modeling of long-range temporal dependencies and dynamic spatial correlations.
 
 This repository contains:
 - The full implementation of **PGSFormer** (model, training engine, utilities)
