@@ -41,6 +41,8 @@ def generate_train_val_test(args):
     seq_length_x, seq_length_y = args.seq_length_x, args.seq_length_y
     df = pd.read_hdf(args.traffic_df_filename)
 
+    # FIX 1: Properly define x_offsets based on history sequence length
+    x_offsets = np.sort(np.arange(-seq_length_x + 1, 1, 1))
     y_offsets = np.sort(np.arange(args.y_start, (seq_length_y + 1), 1))
 
     x, y = generate_graph_seq2seq_io_data(
@@ -63,7 +65,15 @@ def generate_train_val_test(args):
     )
     x_test, y_test = x[-num_test:], y[-num_test:]
 
+    # FIX 2: Map categories to variables so they can be saved correctly
+    data_splits = {
+        "train": (x_train, y_train),
+        "val": (x_val, y_val),
+        "test": (x_test, y_test)
+    }
+
     for cat in ["train", "val", "test"]:
+        _x, _y = data_splits[cat]
         np.savez_compressed(
             os.path.join(args.output_dir, f"{cat}.npz"),
             x=_x,
@@ -84,8 +94,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if os.path.exists(args.output_dir):
-        reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n)')).lower().strip()
-        if reply[0] != 'y': exit
+        reply = str(input(f'{args.output_dir} exists. Do you want to overwrite it? (y/n) ')).lower().strip()
+        # FIX 3: Added parenthesis to exit() so the program actually quits
+        if reply[0] != 'y': 
+            exit()
     else:
         os.makedirs(args.output_dir)
     generate_train_val_test(args)
